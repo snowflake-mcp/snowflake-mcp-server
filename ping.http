@@ -1,0 +1,25 @@
+POST http://127.0.0.1:8000/query
+{
+    "query":"show database;"
+}
+
+HTTP/1.1 400  - Bad Request
+date: Wed, 23 Jul 2025 09:32:25 GMT
+server: uvicorn
+content-length: 103
+content-type: application/json
+connection: close
+###
+POST http://127.0.0.1:8000/query
+{
+    "query":"CREATE OR REPLACE TABLE SF_MCP_DB.DEV_ENV.CAMPAIGN_PERFORMANCE (CAMPAIGN_ID VARCHAR(50) NOT NULL,CAMPAIGN_NAME VARCHAR(255),START_DATE DATE,END_DATE DATE,BUDGET NUMBER(12, 2),IMPRESSIONS NUMBER(38, 0),CLICKS NUMBER(38, 0),CONVERSIONS NUMBER(38, 0),COST_PER_CLICK FLOAT,LAST_UPDATED_AT TIMESTAMP_TZ DEFAULT CURRENT_TIMESTAMP());"
+}
+
+
+HTTP/1.1 200  - OK
+date: Wed, 23 Jul 2025 09:37:22 GMT
+server: uvicorn
+content-length: 75
+content-type: application/json
+connection: close
+###
