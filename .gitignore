@@ -1,0 +1,26 @@
+# Sensitive Configuration Files
+config.json
+.env
+.env.local
+
+# Credentials and Secrets
+*.key
+*.pem
+secrets/
+credentials/
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# Logs
+*.log
+logs/
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# HTTP test files (may contain sensitive data)
+*.http
