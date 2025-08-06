@@ -39,11 +39,10 @@ class SnowflakeConnection:
         """Initialize Snowflake connection configuration from environment variables."""
         self.config = {
             "user": os.getenv("SNOWFLAKE_USER"),
-            "password": os.getenv("SNOWFLAKE_PASSWORD"),
             "account": os.getenv("SNOWFLAKE_ACCOUNT"),
             "database": os.getenv("SNOWFLAKE_DATABASE"),
             "warehouse": os.getenv("SNOWFLAKE_WAREHOUSE"),
-            # "authenticator": os.getenv("SNOWFLAKE_AUTHENTICATOR"), -- add this for SSO login
+             **({"password": os.getenv("SNOWFLAKE_PASSWORD")} if os.getenv("SNOWFLAKE_PASSWORD") else {"authenticator": os.getenv("SNOWFLAKE_AUTHENTICATOR")})
         }
         self.conn: Optional[snowflake.connector.SnowflakeConnection] = None
         

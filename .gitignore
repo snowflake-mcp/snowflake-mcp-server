@@ -1,1 +1,8 @@
 /.env
+/my_dbt_project
+/provision_tool
+/logs
+/okta_env
+/output.csv
+/snowflake_server.log
+/phdata_env
