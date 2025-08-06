@@ -1,0 +1,73 @@
+version: 2
+
+models:
+  - name: stg_user_scd2
+    description: "Staging table for user data with SCD2 (Slowly Changing Dimension Type 2) tracking. This table captures historical changes in user dimension data."
+    config:
+      materialized: table
+      tags: ["stage", "user", "scd2"]
+    
+    columns:
+      - name: as_was_date
+        description: "Date when the record was valid (SCD2 tracking field). Indicates the historical point in time when this user record was active."
+        tests:
+          - not_null
+          - dbt_utils.is_timestamp
+        meta:
+          data_type: DATE
+          nullable: true
+          scd2_field: true
+      
+      - name: name
+        description: "User's full name or display name"
+        tests:
+          - not_null
+          - dbt_utils.string_not_empty
+        meta:
+          data_type: VARCHAR(16777216)
+          nullable: true
+          pii: true
+      
+      - name: age
+        description: "User's age in years"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 120
+          - dbt_utils.is_numeric
+        meta:
+          data_type: NUMBER(38,0)
+          nullable: true
+          pii: true
+      
+      - name: region_c
+        description: "User's region or geographical location code"
+        tests:
+          - not_null
+          - dbt_utils.string_not_empty
+        meta:
+          data_type: VARCHAR(16777216)
+          nullable: true
+          business_key: true
+    
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - name
+            - age
+            - region_c
+            - as_was_date
+      
+      - dbt_utils.expression_is_true:
+          expression: "as_was_date <= current_date()"
+          config:
+            severity: warn
+      
+      - dbt_utils.expression_is_true:
+          expression: "age >= 0 and age <= 120"
+          config:
+            severity: error
+    
+    docs:
+      show: true
+      node_color: "#e1f5fe"  # Light blue for staging models 

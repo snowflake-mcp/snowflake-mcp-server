@@ -1,8 +1,8 @@
-/.env
-/my_dbt_project
-/provision_tool
-/logs
-/okta_env
-/output.csv
-/snowflake_server.log
-/phdata_env
+/snowflake_mcp/.env
+/snowflake_mcp/my_dbt_project
+/snowflake_mcp/provision_tool
+/snowflake_mcp/logs
+/snowflake_mcp/okta_env
+/snowflake_mcp/output.csv
+/snowflake_mcp/snowflake_server.log
+/snowflake_mcp/phdata_env
