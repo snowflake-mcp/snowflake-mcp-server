@@ -1,0 +1,17 @@
+{
+  "Database timeout error occurred while querying Snowflake.": {
+    "resolutions": [
+      {
+        "resolution": "Restarted the database, which resolved the timeout issue.",
+        "success_count": 1,
+        "failure_notes": []
+      },
+      {
+        "resolution": "Increased the timeout session for the database, which resolved the timeout issue.",
+        "success_count": 1,
+        "failure_notes": []
+      }
+    ],
+    "error_type": "failure"
+  }
+}
