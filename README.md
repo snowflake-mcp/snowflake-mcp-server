@@ -51,5 +51,44 @@ Below is an example of the configuration structure.
 * error_loging tool which logs the error into csv file and 
 * error_fix tool which fix the errors by checking if that common error occured before.
 
+## Setup error_log mcp server
+1. Clone the repo
+2. create a venv 
+```
+python -m venv venv
+```
+3. Activate the venv
+```
+#for mac
+source venv/bin/activate
+#for windows
+venv/Scripts/activate
+```
+4. Install all the dependencies present in requirements.txt
+```
+pip install -r requirements.txt
+```
+5. Setup the mcp server
+* go to cursor settings -> mcp tool --> add server
+6. Add the following JSON 
+```
+{
+  "mcpServers": {
+    "error_log": {
+      "command": "yourPath/snowflake_mcp_server/venv/bin/python3.13",
+      "args": ["yourPath/snowflake-mcp-server/error_log_mcp/main.py"]
+    }
+  }
+}
+```
+7. Change the path to point to the main.py and python in venv/bin or venv/scripts
+
+
+
+
+
+
+
+
 
 

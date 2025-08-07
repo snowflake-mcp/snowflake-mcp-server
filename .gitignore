@@ -6,3 +6,4 @@
 /snowflake_mcp/output.csv
 /snowflake_mcp/snowflake_server.log
 /snowflake_mcp/phdata_env
+/error_log_mcp/.env
