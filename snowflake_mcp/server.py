@@ -273,6 +273,33 @@ class SnowflakeServer(Server):
                         "properties": {},
                         "required": []
                     }
+                ),
+                Tool(
+                    name="create_stored_procedure",
+                    description="Create a stored procedure in Snowflake from a .sql file",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "sql_file_path": {
+                                "type": "string",
+                                "description": "Path to the .sql file containing the stored procedure definition"
+                            },
+                            "database_name": {
+                                "type": "string",
+                                "description": "Database name to create the procedure in (optional)"
+                            },
+                            "schema_name": {
+                                "type": "string",
+                                "description": "Schema name to create the procedure in (optional)"
+                            },
+                            "replace_if_exists": {
+                                "type": "boolean",
+                                "description": "Replace procedure if it already exists (default: true)",
+                                "default": True
+                            }
+                        },
+                        "required": ["sql_file_path"]
+                    }
                 )
             ]
 
@@ -404,6 +431,24 @@ class SnowflakeServer(Server):
                     return [TextContent(
                         type="text",
                         text=f"Warehouse Information (execution time: {execution_time:.2f}s):\n{result_str}"
+                    )]
+                
+                elif name == "create_stored_procedure":
+                    sql_file_path = arguments["sql_file_path"]
+                    database_name = arguments.get("database_name")
+                    schema_name = arguments.get("schema_name")
+                    replace_if_exists = arguments.get("replace_if_exists", True)
+                    
+                    result = self.db.create_stored_procedure_from_file(
+                        sql_file_path, database_name, schema_name, replace_if_exists
+                    )
+                    execution_time = time.time() - start_time
+                    result_str = json.dumps(result, indent=2, default=str)
+                    
+                    status = "SUCCESS" if result.get("success") else "FAILED"
+                    return [TextContent(
+                        type="text",
+                        text=f"Stored Procedure Creation {status} (execution time: {execution_time:.2f}s):\n{result_str}"
                     )]
                 
                 elif name == "inspect_schema":
