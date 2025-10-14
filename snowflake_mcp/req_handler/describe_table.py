@@ -15,6 +15,10 @@ class DescribeTables:
         full_table_name = '.'.join(parts)
         
         # Get column information
+        table_query = f"""
+        DESCRIBE TABLE {full_table_name}
+        """
+            
         columns_query = f"""
         SELECT 
             ordinal_position,
@@ -39,27 +43,27 @@ class DescribeTables:
         columns_query += " ORDER BY ordinal_position"
         
         # Get table metadata
-        table_query = f"""
-        SELECT 
-            table_catalog as database_name,
-            table_schema as schema_name,
-            table_name,
-            table_type,
-            created,
-            last_altered,
-            comment,
-            row_count,
-            bytes,
-            clustering_key,
-            auto_clustering_on
-        FROM information_schema.tables
-        WHERE table_name = '{table_name}'
-        """
+        # table_query = f"""
+        # SELECT 
+        #     table_catalog as database_name,
+        #     table_schema as schema_name,
+        #     table_name,
+        #     table_type,
+        #     created,
+        #     last_altered,
+        #     comment,
+        #     row_count,
+        #     bytes,
+        #     clustering_key,
+        #     auto_clustering_on
+        # FROM information_schema.tables
+        # WHERE table_name = '{table_name}'
+        # """
         
-        if database_name:
-            table_query += f" AND table_catalog = '{database_name}'"
-        if schema_name:
-            table_query += f" AND table_schema = '{schema_name}'"
+        # if database_name:
+        #     table_query += f" AND table_catalog = '{database_name}'"
+        # if schema_name:
+        #     table_query += f" AND table_schema = '{schema_name}'"
         
         conn = self.verify_link()
         with conn.cursor() as cursor:
