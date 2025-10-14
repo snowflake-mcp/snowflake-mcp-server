@@ -13,6 +13,8 @@ from dotenv import load_dotenv
 import mcp.server.stdio
 from mcp.server import Server
 from mcp.types import Tool, TextContent
+from mcp import types
+from pydantic import AnyUrl
 from connection import SnowflakeConnection
 
 # Configure logging
@@ -67,7 +69,8 @@ class SnowflakeServer(Server):
                                 "type": "string", 
                                 "description": "Schema name to inspect (optional)"
                             }
-                        }
+                        },
+                        "required": ["table_name", "schema_name"]
                     }
                 ),
                 Tool(
@@ -123,7 +126,7 @@ class SnowflakeServer(Server):
                                 "description": "Database name (optional - if not provided, lists schemas from all databases)"
                             }
                         },
-                        "required": []
+                        "required": ["database_name"]
                     }
                 ),
                 Tool(
@@ -150,7 +153,7 @@ class SnowflakeServer(Server):
                                 "default": ["null_check", "duplicate_check"]
                             }
                         },
-                        "required": []
+                        "required": ["database_name", "schema_name"]
                     }
                 ),
                 Tool(
@@ -172,7 +175,7 @@ class SnowflakeServer(Server):
                                 "description": "Schema name (optional)"
                             }
                         },
-                        "required": ["table_name"]
+                        "required": ["table_name", "database_name", "schema_name"]
                     }
                 ),
                 Tool(
@@ -200,7 +203,7 @@ class SnowflakeServer(Server):
                                 "maximum": 100
                             }
                         },
-                        "required": ["table_name"]
+                        "required": ["table_name", "database_name", "schema_name"]
                     }
                 ),
                 Tool(
@@ -226,7 +229,7 @@ class SnowflakeServer(Server):
                                 "description": "Schema name (optional)"
                             }
                         },
-                        "required": ["table_name", "column_name"]
+                        "required": ["table_name", "column_name", "database_name", "schema_name"]
                     }
                 ),
                 Tool(
@@ -244,7 +247,7 @@ class SnowflakeServer(Server):
                                 "description": "Database name to limit search (optional)"
                             }
                         },
-                        "required": ["search_term"]
+                        "required": ["search_term", "database_name"]
                     }
                 ),
                 Tool(
@@ -262,7 +265,7 @@ class SnowflakeServer(Server):
                                 "description": "Database name to limit search (optional)"
                             }
                         },
-                        "required": ["search_term"]
+                        "required": ["search_term", "database_name"]
                     }
                 ),
                 Tool(
