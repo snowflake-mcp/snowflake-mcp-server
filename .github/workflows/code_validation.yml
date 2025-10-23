@@ -23,7 +23,9 @@ jobs:
         DANGEROUS_PATTERNS=("DROP TABLE" "DROP DATABASE"  "DROP SCHEMA")
         WARN_PATTERN=("UPDATE" "TRUNCATE" "DELETE FROM")
         CHANGED_FILES=$(git diff --numstat HEAD~1 HEAD | awk '$1 > 0 {print $3}')
-        
+        echo "Changed files: $CHANGED_FILES"
+        violations_found=false
+
         for file in $CHANGED_FILES; do
           if [ -f "$file" ]; then
             for pattern in "${DANGEROUS_PATTERNS[@]}"; do
