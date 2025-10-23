@@ -32,6 +32,7 @@ jobs:
             if [ -n "$ADDED_LINES" ]; then
               echo "Newly added lines:"
               echo "$ADDED_LINES"
+            fi
             for pattern in "${DANGEROUS_PATTERNS[@]}"; do
               if grep -i "$pattern" "$ADDED_LINES"; then
                 echo "⚠️  WARNING: Potentially dangerous SQL pattern '$pattern' found in $file"
@@ -47,6 +48,7 @@ jobs:
             if [ -n "$ADDED_LINES" ]; then
               echo "Newly added lines:"
               echo "$ADDED_LINES"
+            fi
             for pattern in "${WARN_PATTERN[@]}"; do
               if grep -i "$pattern" "$ADDED_LINES"; then
                 echo "⚠️  WARNING: Potentially dangerous SQL pattern '$pattern' found in $file"
