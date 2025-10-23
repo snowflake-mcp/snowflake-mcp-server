@@ -15,6 +15,7 @@ from req_handler.get_warehouse_info import GetWarehouseInfo
 from req_handler.inspect_schema import InspectSchema
 from req_handler.check_data_quality import CheckDataQuality
 from req_handler.analyze_performance import AnalyzePerformance
+from req_handler.create_stored_procedure import CreateStoredProcedure
 import snowflake.connector
 from dotenv import load_dotenv
 
