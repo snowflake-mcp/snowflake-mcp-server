@@ -47,7 +47,7 @@ jobs:
         if [ "$violations_found" = true ]; then
           echo "❌ VIOLATIONS FOUND: DELETE or DROP keywords detected in newly added code"
           echo "Please remove DELETE/DROP keywords from your code before merging."
-          exit 1
+          exit "failure because of DELETE/DROP keywords"
         else
           echo "✅ No DELETE/DROP keywords found in newly added code"
         fi
