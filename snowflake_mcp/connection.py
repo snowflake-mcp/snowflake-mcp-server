@@ -16,6 +16,7 @@ from req_handler.inspect_schema import InspectSchema
 from req_handler.check_data_quality import CheckDataQuality
 from req_handler.analyze_performance import AnalyzePerformance
 from req_handler.create_stored_procedure import CreateStoredProcedure
+from req_handler.drop_database import DropDatabase
 import snowflake.connector
 from dotenv import load_dotenv
 
@@ -26,7 +27,7 @@ logger = logging.getLogger('snowflake_connection')
 load_dotenv()
 
 
-class SnowflakeConnection(ProcessReq,ListDatabases,ListSchemas,ListTables,DescribeTables,GetTableSample,GetColumnStats,SearchTables,SearchColumns,GetWarehouseInfo,InspectSchema,CheckDataQuality,AnalyzePerformance):
+class SnowflakeConnection(ProcessReq,ListDatabases,ListSchemas,ListTables,DescribeTables,GetTableSample,GetColumnStats,SearchTables,SearchColumns,GetWarehouseInfo,InspectSchema,CheckDataQuality,AnalyzePerformance,DropDatabase):
     """Manages Snowflake database connections and query execution."""
     
     def __init__(self) -> None:

@@ -277,6 +277,20 @@ class SnowflakeServer(Server):
                     }
                 ),
                 Tool(
+                    name="drop_database",
+                    description="Drop a database from Snowflake",
+                    inputSchema={
+                        "type": "object",
+                        "properties": {
+                            "database_name": {
+                                "type": "string",
+                                "description": "Name of the database to drop"
+                            }
+                        },
+                        "required": ["database_name"]
+                    }
+                ),
+                Tool(
                     name="create_stored_procedure",
                     description="Create a stored procedure in Snowflake from a .sql file",
                     inputSchema={
@@ -434,7 +448,15 @@ class SnowflakeServer(Server):
                         type="text",
                         text=f"Warehouse Information (execution time: {execution_time:.2f}s):\n{result_str}"
                     )]
-                
+                elif name == "drop_database":
+                    database_name = arguments["database_name"]
+                    result = self.db.drop_database(database_name)
+                    execution_time = time.time() - start_time
+                    result_str = json.dumps(result, indent=2, default=str)
+                    return [TextContent(
+                        type="text",
+                        text=f"Database Dropped (execution time: {execution_time:.2f}s):\n{result_str}"
+                    )]
                 elif name == "create_stored_procedure":
                     sql_file_path = arguments["sql_file_path"]
                     database_name = arguments.get("database_name")
