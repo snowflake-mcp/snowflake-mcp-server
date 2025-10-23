@@ -28,18 +28,27 @@ jobs:
 
         for file in $CHANGED_FILES; do
           if [ -f "$file" ]; then
+            ADDED_LINES=$(git diff HEAD~1 HEAD -- "$file" | grep '^+' | grep -v '^+++')
+            if [ -n "$ADDED_LINES" ]; then
+              echo "Newly added lines:"
+              echo "$ADDED_LINES"
             for pattern in "${DANGEROUS_PATTERNS[@]}"; do
-              if grep -i "$pattern" "$file"; then
+              if grep -i "$pattern" "$ADDED_LINES"; then
                 echo "⚠️  WARNING: Potentially dangerous SQL pattern '$pattern' found in $file"
                 echo "Please review this code carefully before merging."
+                violations_found=true
               fi
             done
           fi
         done
         for file in $CHANGED_FILES; do
           if [ -f "$file" ]; then
+            ADDED_LINES=$(git diff HEAD~1 HEAD -- "$file" | grep '^+' | grep -v '^+++')
+            if [ -n "$ADDED_LINES" ]; then
+              echo "Newly added lines:"
+              echo "$ADDED_LINES"
             for pattern in "${WARN_PATTERN[@]}"; do
-              if grep -i "$pattern" "$file"; then
+              if grep -i "$pattern" "$ADDED_LINES"; then
                 echo "⚠️  WARNING: Potentially dangerous SQL pattern '$pattern' found in $file"
                 echo "Please review this code carefully before merging."
                 violations_found=true
