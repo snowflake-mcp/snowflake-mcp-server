@@ -19,7 +19,15 @@ jobs:
     - name: Check for DELETE/DROP keywords in new code
       run: |
         echo "🔍 Checking for DELETE/DROP keywords in newly added code..."
-        
+        CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD) # Get the list of changed files
+        if [ -z "$CHANGED_FILES" ]; then
+          echo "No files changed in this PR"
+          exit 0
+        fi
+        echo "Changed files: $CHANGED_FILES"
+        for file in $CHANGED_FILES; do
+          if [ -f "$file" ]; then
+            echo "Checking file: $file"
     - name: Additional Security Check
       run: |
         echo "🔒 Running additional security checks..."
