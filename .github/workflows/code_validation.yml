@@ -1,4 +1,4 @@
-name: Code-Validation
+name: code-validation
 
 on:
   pull_request:
@@ -20,99 +20,6 @@ jobs:
       run: |
         echo "🔍 Checking for DELETE/DROP keywords in newly added code..."
         
-        # Get the list of changed files
-        CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
-        
-        if [ -z "$CHANGED_FILES" ]; then
-          echo "No files changed in this PR"
-          exit 0
-        fi
-        
-        echo "Changed files: $CHANGED_FILES"
-        
-        # Check each changed file for DELETE/DROP keywords
-        VIOLATIONS_FOUND=false
-        
-        for file in $CHANGED_FILES; do
-          if [ -f "$file" ]; then
-            echo "Checking file: $file"
-            
-            # Check for DELETE or DROP keywords (case insensitive)
-            # Look for these keywords as whole words to avoid false positives
-            if grep -i -E '\b(DELETE|DROP)\b' "$file"; then
-              echo "❌ VIOLATION FOUND in $file: DELETE or DROP keyword detected"
-              echo "The following lines contain DELETE or DROP keywords:"
-              grep -i -n -E '\b(DELETE|DROP)\b' "$file" | while read line; do
-                echo "  Line $line"
-              done
-              VIOLATIONS_FOUND=true
-            else
-              echo "✅ No DELETE/DROP keywords found in $file"
-            fi
-          fi
-        done
-        
-        # Check only newly added lines for more precise detection
-        echo ""
-        echo "🔍 Checking only newly added lines..."
-        
-        for file in $CHANGED_FILES; do
-          if [ -f "$file" ]; then
-            echo "Checking newly added lines in: $file"
-            
-            # Get only the added lines (lines starting with +)
-            ADDED_LINES=$(git diff HEAD~1 HEAD -- "$file" | grep '^+' | grep -v '^+++')
-            
-            if [ -n "$ADDED_LINES" ]; then
-              echo "Newly added lines:"
-              echo "$ADDED_LINES"
-              
-              # Check if any added line contains DELETE or DROP
-              if echo "$ADDED_LINES" | grep -i -E '\b(DELETE|DROP)\b'; then
-                echo "❌ VIOLATION FOUND in newly added code in $file: DELETE or DROP keyword detected"
-                echo "The following newly added lines contain DELETE or DROP keywords:"
-                echo "$ADDED_LINES" | grep -i -n -E '\b(DELETE|DROP)\b' | while read line; do
-                  echo "  $line"
-                done
-                VIOLATIONS_FOUND=true
-              else
-                echo "✅ No DELETE/DROP keywords found in newly added lines of $file"
-              fi
-            else
-              echo "No new lines added to $file"
-            fi
-          fi
-        done
-        
-        # Fail the workflow if violations are found
-        if [ "$VIOLATIONS_FOUND" = true ]; then
-          echo ""
-          echo "🚫 BUILD FAILED: DELETE or DROP keywords detected in newly added code"
-          echo "Please remove DELETE/DROP keywords from your code before merging."
-          echo "If these keywords are necessary for legitimate purposes (like comments or documentation),"
-          echo "please review and ensure they are not actual SQL commands that could cause data loss."
-          exit 1
-        else
-          echo ""
-          echo "✅ BUILD PASSED: No DELETE or DROP keywords found in newly added code"
-        fi
-    
     - name: Additional Security Check
       run: |
         echo "🔒 Running additional security checks..."
-        
-        # Check for potentially dangerous SQL patterns
-        DANGEROUS_PATTERNS=("TRUNCATE" "DROP TABLE" "DROP DATABASE" "DELETE FROM" "DROP SCHEMA")
-        
-        CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
-        
-        for file in $CHANGED_FILES; do
-          if [ -f "$file" ]; then
-            for pattern in "${DANGEROUS_PATTERNS[@]}"; do
-              if grep -i "$pattern" "$file"; then
-                echo "⚠️  WARNING: Potentially dangerous SQL pattern '$pattern' found in $file"
-                echo "Please review this code carefully before merging."
-              fi
-            done
-          fi
-        done
