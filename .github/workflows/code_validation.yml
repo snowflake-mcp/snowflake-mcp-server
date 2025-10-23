@@ -36,9 +36,11 @@ jobs:
               echo "The following lines contain DELETE or DROP keywords:"
               grep -i -n -E '\b(DELETE|DROP)\b' "$file" | while read line; do
                 echo "  Line $line"
+              done
               violations_found=true
             else
               echo "✅ No DELETE/DROP keywords found in $file"
+            fi
           fi
         done
     - name: Additional Security Check
