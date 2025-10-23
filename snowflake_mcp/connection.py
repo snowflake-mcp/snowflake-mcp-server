@@ -24,8 +24,7 @@ logger = logging.getLogger('snowflake_connection')
 
 # Load environment variables
 load_dotenv()
-
-
+#hre
 class SnowflakeConnection(ProcessReq,ListDatabases,ListSchemas,ListTables,DescribeTables,GetTableSample,GetColumnStats,SearchTables,SearchColumns,GetWarehouseInfo,InspectSchema,CheckDataQuality,AnalyzePerformance):
     """Manages Snowflake database connections and query execution."""
     
