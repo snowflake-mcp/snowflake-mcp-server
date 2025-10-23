@@ -20,7 +20,8 @@ jobs:
       run: |
         echo "🔒 Running additional security checks..."
 
-        DANGEROUS_PATTERNS=("TRUNCATE" "DROP TABLE" "DROP DATABASE" "DELETE FROM" "DROP SCHEMA" "UPDATE")
+        DANGEROUS_PATTERNS=("DROP TABLE" "DROP DATABASE"  "DROP SCHEMA" )
+        WARN_PATTERN = ("UPDATE" "TRUNCATE" "DELETE FROM")
         CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
         
         for file in $CHANGED_FILES; do
@@ -33,3 +34,21 @@ jobs:
             done
           fi
         done
+        for file in $CHANGED_FILES; do
+          if [ -f "$file" ]; then
+            for pattern in "${WARN_PATTERN[@]}"; do
+              if grep -i "$pattern" "$file"; then
+                echo "⚠️  WARNING: Potentially dangerous SQL pattern '$pattern' found in $file"
+                echo "Please review this code carefully before merging."
+                violations_found=true
+              fi
+            done
+          fi
+        done
+        if [ "$violations_found" = true ]; then
+          echo "❌ VIOLATIONS FOUND: DELETE or DROP keywords detected in newly added code"
+          echo "Please remove DELETE/DROP keywords from your code before merging."
+          exit 1
+        else
+          echo "✅ No DELETE/DROP keywords found in newly added code"
+        fi
