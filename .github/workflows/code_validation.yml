@@ -25,9 +25,20 @@ jobs:
           exit 0
         fi
         echo "Changed files: $CHANGED_FILES"
+
+        violations_found=false
+
         for file in $CHANGED_FILES; do
           if [ -f "$file" ]; then
             echo "Checking file: $file"
+            if grep -i -E '\b(DELETE|DROP)\b' "$file"; then
+              echo "❌ VIOLATION FOUND in $file: DELETE or DROP keyword detected"
+              echo "The following lines contain DELETE or DROP keywords:"
+              grep -i -n -E '\b(DELETE|DROP)\b' "$file" | while read line; do
+                echo "  Line $line"
+              violations_found=true
+            else
+              echo "✅ No DELETE/DROP keywords found in $file"
           fi
         done
     - name: Additional Security Check
