@@ -20,8 +20,8 @@ jobs:
       run: |
         echo "🔒 Running additional security checks..."
 
-        DANGEROUS_PATTERNS=("DROP TABLE" "DROP DATABASE"  "DROP SCHEMA" )
-        WARN_PATTERN = ("UPDATE" "TRUNCATE" "DELETE FROM")
+        DANGEROUS_PATTERNS=("DROP TABLE" "DROP DATABASE"  "DROP SCHEMA")
+        WARN_PATTERN=("UPDATE" "TRUNCATE" "DELETE FROM")
         CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
         
         for file in $CHANGED_FILES; do
