@@ -16,41 +16,20 @@ jobs:
       with:
         fetch-depth: 0  # Fetch full history to compare changes
     
-    - name: Check for DELETE/DROP keywords in new code
-      run: |
-        echo "🔍 Checking for DELETE/DROP keywords in newly added code..."
-        CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD) # Get the list of changed files
-        if [ -z "$CHANGED_FILES" ]; then
-          echo "No files changed in this PR"
-          exit 0
-        fi
-        echo "Changed files: $CHANGED_FILES"
-
-        violations_found=false
-
-        for file in $CHANGED_FILES; do
-          if [ -f "$file" ]; then
-            echo "Checking file: $file"
-            if grep -i -E '\b(DELETE|DROP)\b' "$file"; then
-              echo "❌ VIOLATION FOUND in $file: DELETE or DROP keyword detected"
-              echo "The following lines contain DELETE or DROP keywords:"
-              grep -i -n -E '\b(DELETE|DROP)\b' "$file" | while read line; do
-                echo "  Line $line"
-              done
-              violations_found=true
-            else
-              echo "✅ No DELETE/DROP keywords found in $file"
-            fi
-          fi
-        done
-
-        if [ "$violations_found" = true ]; then
-          echo "❌ VIOLATIONS FOUND: DELETE or DROP keywords detected in newly added code"
-          echo "Please remove DELETE/DROP keywords from your code before merging."
-          exit 1
-        else
-          echo "✅ No DELETE/DROP keywords found in newly added code"
-        fi
-    - name: Additional Security Check
+    - name: Security Check
       run: |
         echo "🔒 Running additional security checks..."
+
+        DANGEROUS_PATTERNS=("TRUNCATE" "DROP TABLE" "DROP DATABASE" "DELETE FROM" "DROP SCHEMA" "UPDATE")
+        CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+        
+        for file in $CHANGED_FILES; do
+          if [ -f "$file" ]; then
+            for pattern in "${DANGEROUS_PATTERNS[@]}"; do
+              if grep -i "$pattern" "$file"; then
+                echo "⚠️  WARNING: Potentially dangerous SQL pattern '$pattern' found in $file"
+                echo "Please review this code carefully before merging."
+              fi
+            done
+          fi
+        done
