@@ -2,20 +2,20 @@ import os
 import logging
 import json
 from typing import Optional, Any, Dict, List
-from req_handler.process_requrest import ProcessReq
-from req_handler.list_databases import ListDatabases
-from req_handler.list_schemas import ListSchemas
-from req_handler.list_tables import ListTables
-from req_handler.describe_table import DescribeTables
-from req_handler.get_table_sample import GetTableSample
-from req_handler.get_column_stats import GetColumnStats
-from req_handler.search_tables import SearchTables
-from req_handler.search_columns import SearchColumns
-from req_handler.get_warehouse_info import GetWarehouseInfo
-from req_handler.inspect_schema import InspectSchema
-from req_handler.check_data_quality import CheckDataQuality
-from req_handler.analyze_performance import AnalyzePerformance
-from req_handler.create_stored_procedure import CreateStoredProcedure
+from tools.ProcessRequest import ProcessReq
+from tools.ListDatabases import ListDatabases
+from tools.ListSchemas import ListSchemas
+from tools.ListTables import ListTables
+from tools.DescribeTable import DescribeTables
+from tools.GetTableSampleData import GetTableSample
+from tools.GetColumnStats import GetColumnStats
+from tools.SearchTables import SearchTables
+from tools.SearchColumns import SearchColumns
+from tools.GetWarehouseInfo import GetWarehouseInfo
+from tools.InspectSchema import InspectSchema
+from tools.CheckDataQuality import CheckDataQuality
+from tools.AnalyzePerformance import AnalyzePerformance
+from tools.CreateStoredProcedure import CreateStoredProcedure
 import snowflake.connector
 from dotenv import load_dotenv
 
@@ -25,7 +25,7 @@ logger = logging.getLogger('snowflake_connection')
 # Load environment variables
 load_dotenv()
 #hre
-class SnowflakeConnection(ProcessReq,ListDatabases,ListSchemas,ListTables,DescribeTables,GetTableSample,GetColumnStats,SearchTables,SearchColumns,GetWarehouseInfo,InspectSchema,CheckDataQuality,AnalyzePerformance):
+class SnowflakeConnection(ProcessReq,ListDatabases,ListSchemas,ListTables,DescribeTables,GetTableSample,GetColumnStats,SearchTables,SearchColumns,GetWarehouseInfo,InspectSchema,CheckDataQuality,AnalyzePerformance,CreateStoredProcedure):
     """Manages Snowflake database connections and query execution."""
     
     def __init__(self) -> None:
