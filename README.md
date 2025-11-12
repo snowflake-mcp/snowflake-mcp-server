@@ -1,6 +1,6 @@
 # Snowflake MCP Server
 
-`snowflake-mcp-server` (Master Control Program Server) is a centralized application designed to manage, orchestrate, and monitor data engineering workflows and configurations for Snowflake. It acts as a control plane, providing data engineers with a unified interface to automate and standardize their data pipelines.
+`snowflake-mcp-server` : This server acts as bridge between your AI application and snowflake warehouse. This sever consist of various tools which will help you interact with the warehouse and perform operation seamlessly with minimal configuration.
 
 ---
 ## MCP server List
