@@ -22,17 +22,25 @@
 *** This mcp server can handle both password based authentication and SSO authentication.
 
 ## 1. What is the MCP Server?
+Model Context Protocol is an open standard that defines how models exchange, manage, and reason over shared context.
 
 
-## 2. How This Helps Data Engineers
+## 2. How MCP Servers Help Data Engineers
+* MCP servers enable data engineers to connect AI models directly with enterprise data systems, streamlining access, automation, and insights.
+* By providing standardized, secure connectivity between data warehouses and AI tools, MCP servers simplify integration and improve productivity.
+* Data engineers can leverage MCP to automate data workflows, enhance context for AI applications, and reduce manual integration overhead.
+* With MCP, data engineers spend less time managing connections and more time focusing on data quality, modeling, and innovation.
 
-Implementing the Snowflake MCP Server empowers data engineering teams in several key ways:
-
+## MCP architecture
+It consist of three main part 
+1. MCP Host
+2. MCP Client
+3. MCP Server
 
 ## 5. MCP Config Section
 
 The server config is for CURSOR IDE
-
+Make sure you create env and install the required dependencies 
 Below is an example of the configuration structure.
 ```
 {
@@ -45,13 +53,6 @@ Below is an example of the configuration structure.
 }
 ```
 
-## Task to be done
-* Key-value pair authentication
-* Store data in csv when asked to 
-* error_loging tool which logs the error into csv file and 
-* error_fix tool which fix the errors by checking if that common error occured before.
-
-## Setup error_log mcp server
 1. Clone the repo
 2. create a venv 
 ```
