@@ -7,11 +7,13 @@ import csv
 import pandas as pd
 from typing import Optional, Any, Dict, List
 from datetime import datetime
+import mimetypes
+from pathlib import Path
 import snowflake.connector
 from dotenv import load_dotenv
 import mcp.server.stdio
 from mcp.server import Server
-from mcp.types import Tool, TextContent
+from mcp.types import Resource, Tool, TextContent
 from mcp import types
 from pydantic import AnyUrl
 from connection import SnowflakeConnection
@@ -35,6 +37,48 @@ class SnowflakeServer(Server):
         super().__init__(name="snowflake-server")
         self.db = SnowflakeConnection()
         logger.info("SnowflakeServer initialized")
+
+        @self.list_resources()
+        async def list_resources():
+            """Expose static resources from the local resources directory."""
+            resources_dir = Path(__file__).parent / "resources"
+            items: List[Resource] = []
+            if resources_dir.exists() and resources_dir.is_dir():
+                for entry in resources_dir.iterdir():
+                    if entry.is_file():
+                        mime_type, _ = mimetypes.guess_type(entry.name)
+                        uri = f"file://{entry.resolve()}"
+                        items.append(
+                            Resource(
+                                name=entry.name,
+                                description=f"Static resource: {entry.name}",
+                                uri=uri,  # type: ignore[arg-type]
+                                mimeType=mime_type or "application/octet-stream",  # type: ignore[call-arg]
+                            )
+                        )
+            return items
+
+        @self.read_resource()
+        async def read_resource(uri: AnyUrl):
+            """Read and return the contents of a text-like resource."""
+            try:
+                # Support only local file URIs
+                if uri.scheme != "file":
+                    return [TextContent(type="text", text=f"Unsupported URI scheme: {uri.scheme}")]
+                # Convert file URI to path
+                path = Path(uri.path)
+                if not path.exists() or not path.is_file():
+                    return [TextContent(type="text", text=f"Resource not found: {path}")]
+                mime_type, _ = mimetypes.guess_type(path.name)
+                # Return textual content only; for binary types advise using the URI
+                if mime_type and (mime_type.startswith("text/") or mime_type in {"application/json", "application/sql"}):
+                    text = path.read_text(encoding="utf-8", errors="replace")
+                    return [TextContent(type="text", text=text)]
+                return [TextContent(type="text", text=f"Binary resource. Use URI directly: file://{path.resolve()}")]
+            except Exception as e:
+                logger.error(f"Failed to read resource {uri}: {e}")
+                return [TextContent(type="text", text=f"Error reading resource: {e}")]
+    
 
         @self.list_tools()
         async def get_supported_operations():
